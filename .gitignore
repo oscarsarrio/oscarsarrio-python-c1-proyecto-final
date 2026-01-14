@@ -244,3 +244,6 @@ fabric.properties
 *.DS_Store*
 .python-version
 myenv/
+
+!data/
+!data/*.csv

@@ -1,0 +1,6 @@
+tipo,nombre,telefono,estado,especialidad,centro_id,username,password,direccion
+centro,Hospital Central,,,,,,,"Calle Mayor 10"
+paciente,Chiquito,600111222,ACTIVO,,,chiquito,1234,
+paciente,El Risitas,600333444,ACTIVO,,,risitas,1234,
+doctor,Dr. House,,,"Odontología",1,dr.house,1234,
+doctor,Dr. Vilches,,,"Ortodoncia",1,dr.vilches,1234,
