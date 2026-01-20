@@ -70,9 +70,11 @@ no se confia en información proporcionada por el cliente.
 | Cancelar citas    | Sí    | Sí         | No     | No       |
 | Ver citas         | Todas | Filtradas por fecha | Propias | Propias |
 
-
+---
 
 ## Endpoints Principales
+
+---
 
 ## Creación primer usuario Admin:
 
@@ -140,6 +142,7 @@ json:
 }
 
 (NECESARIO TOKEN ADMIN)
+
 
 
 ## Esquema Endpoint por Rol (Resumen):
