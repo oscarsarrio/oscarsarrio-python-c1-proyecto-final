@@ -60,14 +60,16 @@ no se confia en información proporcionada por el cliente.
 
 ## Roles del Sistema
 
-Acción	         Admin	Secretaria	Médico	Paciente
-Crear pacientes	  Sí	    No	     No	      No
-Crear doctores	     Sí	    No	     No	      No
-Crear centros	     Sí	    No	     No	      No
-Crear citas	        Sí	    No	     No	      Sí (solo para sí mismo)
-Cancelar citas	     Sí	    Sí	     No	      No
-Ver citas	      Todas	 Filtradas	Propias	Propias
-                         (fecha)
+
+| Acción            | Admin | Secretaria | Médico | Paciente |
+|-------------------|:-----:|:----------:|:------:|:--------:|
+| Crear pacientes   | Sí    | No         | No     | No       |
+| Crear doctores    | Sí    | No         | No     | No       |
+| Crear centros     | Sí    | No         | No     | No       |
+| Crear citas       | Sí    | No         | No     | Sí (solo propias) |
+| Cancelar citas    | Sí    | Sí         | No     | No       |
+| Ver citas         | Todas | Filtradas por fecha | Propias | Propias |
+
 
 
 ## Endpoints Principales
