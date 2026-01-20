@@ -30,6 +30,7 @@ def login():
         "username": username,
         "password": password
     })
+    
     r.raise_for_status()
     print("Login correcto\n")
     return r.json()["access_token"]

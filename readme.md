@@ -1,4 +1,4 @@
-# OdontoCare – Proyecto Final Python C1
+## Proyecto Final Python C1
 
 ## Descripción General
 
@@ -7,13 +7,13 @@ Permitiendo administrar usuarios, pacientes, doctores, centros medicos y citas m
 su autenticación es mediante JWT, control de roles, en SQLite a través de SQLAlchemy
 y una arquitectura modular basada en Blueprints.
 
-El proyecto cuenta con un cliente externo en Python y una arquitectura preparada para su ejecución mediante Docker.
+El proyecto cuenta con un cliente externo en Python y esta preparada para su ejecución mediante Docker.
 
 ---
 
 ## Arquitectura del Proyecto
 
-El proyecto sigue una arquitectura modular organizada por dominios, utilizando Blueprints de Flask.
+El proyecto sigue una arquitectura modular, utilizando Blueprints de Flask.
 Cada módulo se encarga de una responsabilidad concreta del sistema, para su buen mantenimiento y
 escalabilidad.
 
@@ -24,9 +24,8 @@ Las responsabilidades se dividen de la siguiente forma:
 - El módulo de administración permite la gestión de usuarios, pacientes, doctores y centros médicos.
 - El módulo de citas implementa la lógica de negocio relacionada con la creación, consulta y cancelación de citas.
 - Los modelos de datos se definen mediante SQLAlchemy y representan las entidades principales del sistema.
-- Los mecanismos de seguridad y control de roles se implementan mediante decoradores personalizados.
 
-El cliente externo se encuentra desacoplado del backend y consume la API a través de peticiones HTTP,
+El cliente externo es independiente del backend y consume la API a través de peticiones HTTP,
 simulando el uso real del sistema desde una aplicación independiente.
 
 ---
@@ -41,7 +40,6 @@ simulando el uso real del sistema desde una aplicación independiente.
 - Requests
 - Docker
 
----
 
 ## Autenticación y Seguridad
 
@@ -56,38 +54,113 @@ El token obtenido debe enviarse en cada petición protegida mediante el header:
 Authorization: Bearer <token>
 
 La validación de permisos y roles se realiza exclusivamente en el servidor,
-evitando confiar en información proporcionada por el cliente.
+no se confia en información proporcionada por el cliente.
 
 ---
 
 ## Roles del Sistema
 
-- admin: gestión completa del sistema
-- secretaria: gestión y cancelación de citas
-- medico: creación y visualización de sus propias citas
-- paciente: visualización de sus propias citas
+Acción	         Admin	Secretaria	Médico	Paciente
+Crear pacientes	  Sí	    No	     No	      No
+Crear doctores	     Sí	    No	     No	      No
+Crear centros	     Sí	    No	     No	      No
+Crear citas	        Sí	    No	     No	      Sí (solo para sí mismo)
+Cancelar citas	     Sí	    Sí	     No	      No
+Ver citas	      Todas	 Filtradas	Propias	Propias
+                         (fecha)
 
----
 
 ## Endpoints Principales
 
-Autenticación:
-- POST /auth/login
+## Autenticación:
 
-Administración (requiere rol admin):
-- POST /admin/usuarios
+- POST /auth/login (Permite autenticar un usuario y obtener un token JWT)
+
+ejemplo':(POST) http://127.0.0.1:5000/auth/login
+
+json:
+
+{
+  "username": "admin",
+  "password": "admin123"
+}
+
+
+## Creación usuarios:
+
+- POST /auth/register (Requiere rol admin y token JWT)
+
+
+
+## Gestión de pacientes:
+
 - POST /admin/pacientes
+- GET  /admin/pacientes
+- GET  /admin/pacientes/<id>
+- PUT  /admin/pacientes/<id>
+- DELETE /admin/pacientes/<id>
+
+(Permite crear, consultar, actualizar y eliminar pacientes.)
+
+## Gestión de doctores:
+
 - POST /admin/doctores
-- POST /admin/centros
 
-Gestión de Citas:
-- POST /citas
-- GET /citas
-- PUT /citas/<id>
+(Permite crear Doctores)
 
----
+ejemplo: (POST) http://127.0.0.1:5000/admin/doctores
 
-## Reglas de consulta
+json:
+
+{
+  "nombre": "Dr. Pepito",
+  "especialidad": "Diagnóstico",
+  "centro_id": 1,
+  "username": "dr.pepito",
+  "password": "1234"
+}
+
+(NECESARIO TOKEN ADMIN)
+
+## Gestion Centros Médicos:
+
+POST /admin/centros
+GET  /admin/centros/<id>
+
+(Permite crear centros médicos y consultar su información.)
+
+ejemplo: (POST) http://127.0.0.1:5000/admin/centros
+
+json:
+
+{
+  "nombre": "Hospital Central",
+  "direccion": "Calle Mayor 123"
+}
+
+(NECESARIO TOKEN ADMIN)
+
+## Gestión de citas
+
+POST /citas (Crear cita)
+*Evita doble reserva del doctor
+GET /citas (Listar citas)
+
+ejemplo : (POST) http://127.0.0.1:5000/citas
+
+json:
+
+{
+  "paciente_id": 1,
+  "doctor_id": 1,
+  "centro_id": 1,
+  "fecha": "2026-01-20T10:00:00",
+  "motivo": "Revisión general"
+}
+
+(NECESARIO TOKEN ADMIN O MISMO PACIENTE)
+
+## Reglas de consulta de citas
 
 - Un paciente solo puede consultar sus propias citas.
 - La creación de citas está restringida a los roles admin y medico.
@@ -96,15 +169,16 @@ Gestión de Citas:
 - Solo los roles admin y secretaria pueden cancelar citas.
 - Un paciente inactivo no puede tener citas médicas.
 
----
 
-## Cliente Externo
+## Cliente Externo (dentro de carpeta client)
 
 El proyecto incluye un cliente externo desarrollado en Python que consume la API REST.
 El cliente gestiona la autenticación, el envío del token y las consultas con distintos endpoints.
 
 La carga de datos inicial se puede hacer desde un archivo CSV locales (dentro de la carpeta data),
 enviando los registros de forma individual a la API.
+
+Ejecución (dentro de su carpeta client) : python client.py
 
 ---
 
@@ -138,7 +212,13 @@ El proyecto incluye un Dockerfile para la construcción de la imagen del servici
 ## Vídeo de Demostración
 
 El proyecto incluye un vídeo explicativo donde se muestra el funcionamiento completo del sistema,
-incluyendo autenticación, uso del cliente externo, gestión de entidades y control de roles.
+incluyendo autenticación, uso del cliente externo, gestión de entidades y control de roles. 
+
+Esta disponible en :
+
+https://drive.google.com/file/d/1ikd3znU5BWZp_AQER4Kaxw9uekWOK6nE/view?usp=drive_link
+
+(Vídeo se entrega mediante enlace externo debido a la limitación de tamaño de GitHub)
 
 ---
 

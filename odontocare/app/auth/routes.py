@@ -1,6 +1,10 @@
 from flask import Blueprint, request, jsonify
 from werkzeug.security import generate_password_hash, check_password_hash
-from flask_jwt_extended import create_access_token
+from flask_jwt_extended import (
+    create_access_token,
+    verify_jwt_in_request,
+    get_jwt_identity
+)
 
 from app.extensions import db
 from app.models import User
@@ -25,17 +29,29 @@ def register():
     rol = data.get("rol")
 
     if not username or not password or not rol:
-        return jsonify(
-            {"error": "Username, password y rol son obligatorios"}
-        ), 400
-
-    if rol not in ROLES_VALIDOS:
-        return jsonify(
-            {"error": f"Rol inválido. Valores permitidos: {ROLES_VALIDOS}"}
-        ), 400
+        return jsonify({
+            "error": "Username, password y rol son obligatorios"
+        }), 400
 
     if User.query.filter_by(username=username).first():
         return jsonify({"error": "El usuario ya existe"}), 409
+
+    # 🔑 BOOTSTRAP: no hay usuarios → crear primer admin sin token
+    if User.query.count() == 0:
+        if rol != "admin":
+            return jsonify({
+                "error": "El primer usuario debe ser admin"
+            }), 400
+    else:
+        # A partir del segundo usuario, exigir admin
+        verify_jwt_in_request()
+        user_id = int(get_jwt_identity())
+        user = User.query.get(user_id)
+
+        if not user or user.rol != "admin":
+            return jsonify({
+                "error": "Acceso solo para administradores"
+            }), 403
 
     user = User(
         username=username,
@@ -46,7 +62,14 @@ def register():
     db.session.add(user)
     db.session.commit()
 
-    return jsonify({"message": "Usuario registrado correctamente"}), 201
+    return jsonify({
+        "message": "Usuario registrado correctamente",
+        "user": {
+            "id": user.id,
+            "username": user.username,
+            "rol": user.rol
+        }
+    }), 201
 
 
 # ----------------------
