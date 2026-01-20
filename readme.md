@@ -74,6 +74,23 @@ no se confia en información proporcionada por el cliente.
 
 ## Endpoints Principales
 
+## Creación primer usuario Admin:
+
+- POST /auth/register (Esta colsulta solo se ejecuta para crear el 1 usuario admin cuan no hay registos en la bdd )
+
+(CON BDD VACIA SIN TOKEN SOLO LA 1 VEZ)
+
+ejemplo:(POST) http://127.0.0.1:5000/auth/register
+
+json:
+
+{
+  "username": "admin",
+  "password": "admin123"
+}
+
+(No lleva token, porque aún no existe ningún usuario.)
+
 ## Autenticación:
 
 - POST /auth/login (Permite autenticar un usuario y obtener un token JWT)
@@ -86,13 +103,6 @@ json:
   "username": "admin",
   "password": "admin123"
 }
-
-
-## Creación primer usuario Admin:
-
-- POST /auth/register (Esta colsulta solo se ejecuta para crear el 1 usuario admin cuan no hay registos en la bdd )
-
-(CON BDD VACIA SIN TOKEN SOLO LA 1 VEZ)
 
 
 ## Creación admin o secretaria:
@@ -132,7 +142,7 @@ json:
 (NECESARIO TOKEN ADMIN)
 
 
-## Esquema Endpoint por Rol:
+## Esquema Endpoint por Rol (Resumen):
 
 | Endpoint                                | Rol que crea            | Quién puede llamarlo |
 | --------------------------------------- | ----------------------- | -------------------- |
