@@ -78,7 +78,7 @@ no se confia en información proporcionada por el cliente.
 
 - POST /auth/login (Permite autenticar un usuario y obtener un token JWT)
 
-ejemplo':(POST) http://127.0.0.1:5000/auth/login
+ejemplo:(POST) http://127.0.0.1:5000/auth/login
 
 json:
 
@@ -88,21 +88,28 @@ json:
 }
 
 
-## Creación usuarios:
+## Creación primer usuario Admin:
 
-- POST /auth/register (Requiere rol admin y token JWT)
+- POST /auth/register (Esta colsulta solo se ejecuta para crear el 1 usuario admin cuan no hay registos en la bdd )
+
+(CON BDD VACIA SIN TOKEN SOLO LA 1 VEZ)
 
 
+## Creación admin o secretaria:
 
-## Gestión de pacientes:
+- POST /admin/usuario
 
-- POST /admin/pacientes
-- GET  /admin/pacientes
-- GET  /admin/pacientes/<id>
-- PUT  /admin/pacientes/<id>
-- DELETE /admin/pacientes/<id>
+ejemplo: (POST) http://127.0.0.1:5000/admin/usuario
 
-(Permite crear, consultar, actualizar y eliminar pacientes.)
+json:
+
+{
+  "username": "secretaria1",
+  "password": "1234",
+  "rol": "secretaria"
+}
+
+(NECESARIO TOKEN ADMIN)
 
 ## Gestión de doctores:
 
@@ -124,10 +131,22 @@ json:
 
 (NECESARIO TOKEN ADMIN)
 
+
+## Esquema Endpoint por Rol:
+
+| Endpoint                                | Rol que crea            | Quién puede llamarlo |
+| --------------------------------------- | ----------------------- | -------------------- |
+| `POST /auth/register`                   | admin (solo el primero) | Sistema (BDD vacía)  |
+| `POST /admin/pacientes`                 | paciente                | Admin                |
+| `POST /admin/doctores`                  | medico                  | Admin                |
+| `POST /admin/usuarios`                  | admin / secretaria      | Admin                |
+
+
 ## Gestion Centros Médicos:
 
-POST /admin/centros
-GET  /admin/centros/<id>
+- POST /admin/centros
+
+- GET  /admin/centros/<id>
 
 (Permite crear centros médicos y consultar su información.)
 
@@ -139,6 +158,18 @@ json:
   "nombre": "Hospital Central",
   "direccion": "Calle Mayor 123"
 }
+
+(NECESARIO TOKEN ADMIN)
+
+## Gestión de pacientes:
+
+- POST /admin/pacientes
+- GET  /admin/pacientes
+- GET  /admin/pacientes/<id>
+- PUT  /admin/pacientes/<id>
+- DELETE /admin/pacientes/<id>
+
+(Permite crear, consultar, actualizar y eliminar pacientes.)
 
 (NECESARIO TOKEN ADMIN)
 
